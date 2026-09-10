@@ -1,0 +1,32 @@
+{
+  "temperature_model": {
+    "mae": 0.983,
+    "rmse": 1.282,
+    "r2": 0.9929
+  },
+  "workload_model": {
+    "mae": 4.093,
+    "rmse": 5.148,
+    "r2": 0.9271
+  },
+  "cooling_demand_model": {
+    "mae": 2.597,
+    "rmse": 3.411,
+    "r2": 0.9818
+  },
+  "features": [
+    "cpu_usage",
+    "gpu_usage",
+    "memory_usage",
+    "server_load",
+    "power_consumption",
+    "current_temp",
+    "ambient_temperature",
+    "humidity",
+    "cooling_level",
+    "dielectric_temp"
+  ],
+  "horizon_minutes": 30,
+  "sample_size": 3000,
+  "test_size": 600
+}

@@ -1,0 +1,358 @@
+{
+  "info": {
+    "_postman_id": "sih-ai-smart-cooling-optimizer-v2",
+    "name": "AI Smart Cooling Optimizer API (SIH Prototype)",
+    "description": "Complete Postman API Collection for AI-Based Water-Efficient Cooling Optimization for Data-Center Infrastructure prototype.",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [
+    {
+      "key": "base_url",
+      "value": "http://localhost:5000",
+      "type": "string"
+    }
+  ],
+  "item": [
+    {
+      "name": "1. Get Telemetry",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{base_url}}/api/telemetry?server_id=server_01",
+          "host": [
+            "{{base_url}}"
+          ],
+          "path": [
+            "api",
+            "telemetry"
+          ],
+          "query": [
+            {
+              "key": "server_id",
+              "value": "server_01"
+            }
+          ]
+        },
+        "description": "Fetches the latest simulated sensor telemetry and recent history for charting."
+      }
+    },
+    {
+      "name": "2. Post Predict Conditions",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"cpu_usage\": 87.0,\n  \"gpu_usage\": 92.0,\n  \"memory_usage\": 88.0,\n  \"server_load\": 90.0,\n  \"power_consumption\": 470.0,\n  \"server_temperature\": 84.0,\n  \"ambient_temperature\": 31.0,\n  \"humidity\": 50.0,\n  \"cooling_level\": 70.0,\n  \"dielectric_temperature\": 55.0\n}"
+        },
+        "url": {
+          "raw": "{{base_url}}/api/predict",
+          "host": [
+            "{{base_url}}"
+          ],
+          "path": [
+            "api",
+            "predict"
+          ]
+        },
+        "description": "Runs the trained RandomForestRegressor models to predict 30-min horizon temperature, workload, and cooling demand."
+      }
+    },
+    {
+      "name": "3. Post Cooling Decision",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"telemetry\": {\n    \"server_load\": 90.0,\n    \"server_temperature\": 84.0,\n    \"cooling_level\": 70.0\n  },\n  \"prediction\": {\n    \"predicted_temperature\": 86.0\n  },\n  \"water_stress\": {\n    \"score\": 85.0\n  },\n  \"dielectric_health\": {\n    \"status\": \"NORMAL\"\n  }\n}"
+        },
+        "url": {
+          "raw": "{{base_url}}/api/cooling-decision",
+          "host": [
+            "{{base_url}}"
+          ],
+          "path": [
+            "api",
+            "cooling-decision"
+          ]
+        },
+        "description": "Evaluates 4 cooling profiles under thermal safety constraint and determines minimum safe cooling level."
+      }
+    },
+    {
+      "name": "4. Get Liquid Health Profile",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{base_url}}/api/liquid-health",
+          "host": [
+            "{{base_url}}"
+          ],
+          "path": [
+            "api",
+            "liquid-health"
+          ]
+        },
+        "description": "Monitors simulated dielectric immersion fluid temperature, cooling effectiveness, and degradation indicators."
+      }
+    },
+    {
+      "name": "5. Get Composite Dashboard",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{base_url}}/api/dashboard?scenario=high_workload_water_stress&server_id=server_01",
+          "host": [
+            "{{base_url}}"
+          ],
+          "path": [
+            "api",
+            "dashboard"
+          ],
+          "query": [
+            {
+              "key": "scenario",
+              "value": "high_workload_water_stress"
+            },
+            {
+              "key": "server_id",
+              "value": "server_01"
+            }
+          ]
+        },
+        "description": "Returns complete aggregated telemetry, predictions, decisions, savings, and alerts."
+      }
+    },
+    {
+      "name": "6. Post Control Recommendation (Simulation Only)",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"action\": \"accept\",\n  \"server_id\": \"server_01\",\n  \"mode\": \"dielectric_immersion\",\n  \"cooling_level\": 85.0\n}"
+        },
+        "url": {
+          "raw": "{{base_url}}/api/control/recommendation",
+          "host": [
+            "{{base_url}}"
+          ],
+          "path": [
+            "api",
+            "control",
+            "recommendation"
+          ]
+        },
+        "description": "Simulates accepting the AI cooling recommendation. Updates simulation state only."
+      }
+    },
+    {
+      "name": "7. Post Run Simulation Pipeline",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"scenario\": \"high_workload_water_stress\",\n  \"server_id\": \"server_01\"\n}"
+        },
+        "url": {
+          "raw": "{{base_url}}/api/simulate",
+          "host": [
+            "{{base_url}}"
+          ],
+          "path": [
+            "api",
+            "simulate"
+          ]
+        },
+        "description": "Triggers end-to-end simulation across all 7 named scenarios and updates system telemetry."
+      }
+    },
+    {
+      "name": "8. Get System Alerts",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{base_url}}/api/alerts",
+          "host": [
+            "{{base_url}}"
+          ],
+          "path": [
+            "api",
+            "alerts"
+          ]
+        },
+        "description": "Retrieves recent active thermal, water stress, cooling degradation, and maintenance alerts."
+      }
+    },
+    {
+      "name": "9. Get Water Resource Savings",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{base_url}}/api/water-saving",
+          "host": [
+            "{{base_url}}"
+          ],
+          "path": [
+            "api",
+            "water-saving"
+          ]
+        },
+        "description": "Returns baseline vs optimized water consumption, saving percentage, and scientific disclaimer."
+      }
+    },
+    {
+      "name": "10. Get Energy Savings",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{base_url}}/api/energy-saving",
+          "host": [
+            "{{base_url}}"
+          ],
+          "path": [
+            "api",
+            "energy-saving"
+          ]
+        },
+        "description": "Returns baseline vs optimized cooling energy power, daily kWh saved, and saving percentage."
+      }
+    },
+    {
+      "name": "11. Get Cooling Profiles",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{base_url}}/api/cooling-profiles",
+          "host": [
+            "{{base_url}}"
+          ],
+          "path": [
+            "api",
+            "cooling-profiles"
+          ]
+        },
+        "description": "Returns specifications for Air, Water-Evaporative, Dielectric Immersion, and Hybrid profiles."
+      }
+    },
+    {
+      "name": "12. Post Workload Rebalance Optimization",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{}"
+        },
+        "url": {
+          "raw": "{{base_url}}/api/workload-optimize",
+          "host": [
+            "{{base_url}}"
+          ],
+          "path": [
+            "api",
+            "workload-optimize"
+          ]
+        },
+        "description": "Analyzes multi-server load distribution and recommends software workload migration."
+      }
+    },
+    {
+      "name": "13. Get Settings",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{base_url}}/api/settings",
+          "host": [
+            "{{base_url}}"
+          ],
+          "path": [
+            "api",
+            "settings"
+          ]
+        },
+        "description": "Returns live configurable thermal limits and optimization weights."
+      }
+    },
+    {
+      "name": "14. Post Update Settings",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"safe_temp_limit\": 82.0,\n  \"water_cost_weight\": 0.5,\n  \"energy_cost_weight\": 0.3\n}"
+        },
+        "url": {
+          "raw": "{{base_url}}/api/settings",
+          "host": [
+            "{{base_url}}"
+          ],
+          "path": [
+            "api",
+            "settings"
+          ]
+        },
+        "description": "Updates live decision weights and triggers optimizer re-evaluation."
+      }
+    },
+    {
+      "name": "15. Get ML Evaluation Metrics",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{base_url}}/api/ml-metrics",
+          "host": [
+            "{{base_url}}"
+          ],
+          "path": [
+            "api",
+            "ml-metrics"
+          ]
+        },
+        "description": "Returns actual MAE, RMSE, and R2 evaluation metrics computed during model training."
+      }
+    }
+  ]
+}
