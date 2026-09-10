@@ -42,5 +42,5 @@ def create_app():
 app = create_app()
 
 if __name__ == "__main__":
-    print(f"Starting AI Smart Cooling Optimizer Backend on http://localhost:{Config.PORT}")
-    app.run(host="0.0.0.0", port=Config.PORT, debug=Config.DEBUG)
+    port = int(os.environ.get("PORT", 5000))
+    app.run(host="0.0.0.0", port=port, debug=False)
